@@ -80,7 +80,7 @@ jobs:
         name: Extract Metadata
         uses: docker/metadata-action@v4
         with:
-          images: ${{ inputs.registry }}/{{ inputs.image }}
+          images: ${{ inputs.registry }}/${{ inputs.image }}
           flavor: latest=false
           tags: |
             # Branches
