@@ -127,7 +127,7 @@ jobs:
           load: true
           file: ${{ inputs.file }}
           tags: ${{ steps.meta.outputs.tags }}
-          cache-to: type=registry,ref=${{ inputs.registry }}/${{ inputs.image }}:buildcache,mode=max
+          cache-to: type=registry,ref=${{ inputs.registry }}/${{ inputs.image }}:buildcache
           cache-from: type=registry,ref=${{ inputs.registry }}/${{ inputs.image }}:buildcache
           build-args: ${{ inputs.build-args }}
           secrets: ${{ secrets.build-secrets }}
