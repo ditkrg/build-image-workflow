@@ -59,7 +59,7 @@ jobs:
           flavor: latest=false
           tags: |
             # Cache
-            type=raw,value={{branch}}-cache
+            type=raw,value=${{ github.ref_name }}-cache
 
             # Branches
             type=ref,event=branch
