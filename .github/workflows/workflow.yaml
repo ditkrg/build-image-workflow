@@ -78,7 +78,7 @@ jobs:
           password: ${{ secrets.password }}
 
       - name: Build Docker images
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           push: true
           file: ${{ inputs.file }}
