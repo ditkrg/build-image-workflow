@@ -25,6 +25,10 @@ on:
         type: string
         default: reg.dev.krd
         required: false
+      timeout:
+        type: number
+        default: 10
+        required: false
 
       runs-on:
         type: string
@@ -43,7 +47,7 @@ jobs:
   build-push:
     name: Build and Push
     runs-on: ${{ fromJson(inputs.runs-on) }}
-    timeout-minutes: 10
+    timeout-minutes: ${{ inputs.timeout }}
     outputs:
       tag: ${{ fromJson(steps.meta.outputs.json).tags[0] }}
       tags: ${{ steps.meta.outputs.tags }}
