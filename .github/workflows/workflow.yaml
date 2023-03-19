@@ -25,10 +25,14 @@ on:
         type: string
         default: reg.dev.krd
         required: false
+      timeout:
+        type: number
+        default: 10
+        required: false
 
       runs-on:
         type: string
-        default: "[ 'self-hosted', 'ubuntu-focal' ]"
+        default: "[ 'ubuntu-latest' ]"
         required: false
 
     secrets:
@@ -43,7 +47,7 @@ jobs:
   build-push:
     name: Build and Push
     runs-on: ${{ fromJson(inputs.runs-on) }}
-    timeout-minutes: 10
+    timeout-minutes: ${{ inputs.timeout }}
     outputs:
       tag: ${{ fromJson(steps.meta.outputs.json).tags[0] }}
       tags: ${{ steps.meta.outputs.tags }}
@@ -78,7 +82,7 @@ jobs:
           password: ${{ secrets.password }}
 
       - name: Build Docker images
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           push: true
           file: ${{ inputs.file }}
