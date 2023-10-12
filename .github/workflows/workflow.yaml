@@ -57,7 +57,7 @@ jobs:
 
       - id: meta
         name: Extract Metadata
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: ${{ inputs.registry }}/${{ inputs.image }}
           flavor: latest=false
