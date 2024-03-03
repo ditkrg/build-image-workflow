@@ -66,7 +66,7 @@ runs:
       id: run-command
       shell: bash
       run: |
-        echo ${{ steps.meta.outputs.json }} | python -m json.tool
+        echo ${{ steps.meta.outputs.json }} | jq '.tags[0]' -r
 
     - name: Login to Registry
       uses: docker/login-action@v3
