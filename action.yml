@@ -14,10 +14,6 @@ inputs:
     description: "Registry URL"
     required: true
     default: reg.dev.krd
-  timeout:
-    description: "Timeout"
-    required: false
-    default: "10"
 
   username:
     required: true
@@ -27,7 +23,7 @@ inputs:
     description: "Password for registry"
   build-secrets:
     required: false
-    description: "Secrets for build"
+    description: "Build Secrets"
 
 outputs:
   tag:
