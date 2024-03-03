@@ -89,9 +89,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
       - name: Build and Push Image
         uses: ditkrg/build-image-workflow@v1
         with:
