@@ -64,7 +64,7 @@ runs:
 
     - name: echo
       run: |
-        echo "${{ steps.meta.outputs.json }}" > meta.json
+        $(echo '${{ steps.meta.outputs.json }}' | jq -r '.tags[0]') > meta.json
         cat meta.json
       shell: bash
 
