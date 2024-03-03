@@ -43,6 +43,26 @@ runs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
+    - name: Run a command and output JSON
+      id: run-command
+      shell: bash
+      run: |
+        echo '{"tags": ["tag1", "tag2", "tag3"]}' > output.json
+
+    - name: Display JSON
+      run: cat output.json
+      shell: bash
+
+    - name: Extract specific value from JSON using jq
+      id: extract-json
+      run: echo "::set-output name=tag::$(echo '${{ steps.run-command.outputs.json }}' | jq -r '.tags[0]')"
+      shell: bash
+
+    - name: Display Extracted Value
+      run: |
+        echo "Extracted Tag: ${{ steps.extract-json.outputs.tag }}"
+      shell: bash
+
     - id: meta
       name: Extract Metadata
       uses: docker/metadata-action@v5
