@@ -47,21 +47,7 @@ runs:
       id: run-command
       shell: bash
       run: |
-        echo '{"tags": ["tag1", "tag2", "tag3"]}' > output.json
-
-    - name: Display JSON
-      run: cat output.json
-      shell: bash
-
-    - name: Extract specific value from JSON using jq
-      id: extract-json
-      run: echo "::set-output name=tag::$(echo '${{ steps.run-command.outputs.json }}' | jq -r '.tags[0]')"
-      shell: bash
-
-    - name: Display Extracted Value
-      run: |
-        echo "Extracted Tag: ${{ steps.extract-json.outputs.tag }}"
-      shell: bash
+        echo ${{ fromJson(steps.meta.outputs.json) }}
 
     - id: meta
       name: Extract Metadata
@@ -81,16 +67,6 @@ runs:
           type=semver,pattern={{major}}
           type=semver,pattern={{major}}.{{minor}}
           type=semver,pattern={{version}},priority=9999 #1
-
-    - name: echo
-      run: |
-        echo $(echo '${{ steps.meta.outputs.json }}' | jq -r '.tags[0]') > meta.json
-      shell: bash
-
-    - name: dsad
-      run: |
-        cat meta.json
-      shell: bash
 
     - name: Login to Registry
       uses: docker/login-action@v3
