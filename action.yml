@@ -30,9 +30,9 @@ inputs:
     description: "Secrets for build"
 
 outputs:
-  # tag:
-  #   description: "Image Tag"
-  #   value: ${{ fromJson(steps.meta.outputs.json).tags[0] }}
+  tag:
+    description: "Image Tag"
+    value: ${{ steps.meta.outputs.tags[0] }}
   tags:
     description: "Image Tags"
     value: ${{ steps.meta.outputs.tags }}
