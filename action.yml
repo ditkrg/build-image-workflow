@@ -1,0 +1,75 @@
+name: "Build, Scan and Push Image"
+description: "Build, Scan and Push Image to Self Hosted Registry"
+inputs:
+  image:
+    description: "Image Name"
+    required: true
+  build-args:
+    description: "Build Arguments"
+    required: false
+  file:
+    description: "Dockerfile Path"
+    required: false
+  registry:
+    description: "Registry URL"
+    required: true
+    default: reg.dev.krd
+  timeout:
+    description: "Timeout"
+    required: false
+    default: "10"
+
+outputs:
+  tag:
+    description: "Image Tag"
+    value: ${{ fromJson(steps.meta.outputs.json).tags[0] }}
+  tags:
+    description: "Image Tags"
+    value: ${{ steps.meta.outputs.tags }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: echo
+      run: echo
+      shell: bash
+
+    - id: meta
+      name: Extract Metadata
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ inputs.registry }}/${{ inputs.image }}
+        flavor: latest=false
+        tags: |
+          # Cache
+          type=raw,value=${{ github.ref_name }}-cache
+
+          # Branches
+          type=ref,event=branch
+          type=ref,event=branch,suffix=-{{sha}},priority=8888 # 2
+
+          # Releases
+          type=semver,pattern={{major}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=semver,pattern={{version}},priority=9999 #1
+
+    - name: Login to Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ inputs.registry }}
+        username: ${{ secrets.username }}
+        password: ${{ secrets.password }}
+
+    - name: Build Docker images
+      uses: docker/build-push-action@v5
+      with:
+        push: true
+        file: ${{ inputs.file }}
+        tags: ${{ steps.meta.outputs.tags }}
+        cache-to: type=inline
+        cache-from: type=registry,ref=${{ inputs.registry }}/${{ inputs.image }}:${{ github.ref_name }}-cache
+        build-args: ${{ inputs.build-args }}
+        secrets: ${{ secrets.build-secrets }}
