@@ -64,7 +64,7 @@ runs:
 
     - name: echo
       run: |
-        echo "${{ steps.meta.outputs }}" > meta.json
+        echo "${{ fromJson(steps.meta.outputs.json) }}" > meta.json
         cat meta.json
       shell: bash
 
