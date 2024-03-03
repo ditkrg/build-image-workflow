@@ -68,7 +68,6 @@ runs:
       run: |
         echo ${{ steps.meta.outputs.json }} > meta.json
         cat meta.json
-        # echo $(cat meta.json | jq '.tags[0]')
 
     - name: Login to Registry
       uses: docker/login-action@v3
