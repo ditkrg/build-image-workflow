@@ -63,7 +63,9 @@ runs:
           type=semver,pattern={{version}},priority=9999 #1
 
     - name: echo
-      run: echo "${{ steps.meta.outputs }}"
+      run: |
+        echo "${{ steps.meta.outputs }}" > meta.json
+        cat meta.json
       shell: bash
 
     - name: Login to Registry
