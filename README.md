@@ -101,4 +101,58 @@ jobs:
           file: "path/to/Dockerfile"
 ```
 
-Feel free to customize the inputs and adjust the workflow based on your specific requirements.
+If you want to use it with our GitOps Action:
+
+```yaml
+name: Deploy
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+
+    paths-ignore:
+      - "**.md"
+      - ".vscode/**"
+
+      - ".github/**"
+      - "!.github/workflows/tests-base.yaml"
+      - "!.github/workflows/deploy.yaml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.build-image.outputs.tag }}
+      tags: ${{ steps.build-image.outputs.tags }}
+    steps:
+      - id: build-image
+        name: Build and Push Image
+        uses: ditkrg/build-image-workflow@v1
+        with:
+          image: "my-docker-image"
+          registry: "my-registry.example.com"
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+          build-args: "EXAMPLE=123"
+          build-secrets: "EXAMPLE=****"
+          file: "path/to/Dockerfile"
+
+  update-gitops:
+    runs-on: ubuntu-latest
+    concurrency: pr-${{ github.ref_name }}
+    needs: build
+    steps:
+      - name: Update gitops
+        uses: ditkrg/update-gitops-image@v1
+        with:
+          owner: ditkrg
+          repo: GITOPS_REPO
+          app-id: ${{ secrets.APP_ID }}
+          image-tag: ${{ needs.build.outputs.tag }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          component-name: REPO_NAME
+```
