@@ -125,6 +125,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    concurrency: build-${{ github.ref_name }}
     outputs:
       tag: ${{ steps.build-image.outputs.tag }}
       tags: ${{ steps.build-image.outputs.tags }}
