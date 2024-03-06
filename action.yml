@@ -28,7 +28,7 @@ inputs:
 outputs:
   tag:
     description: "Image Tag"
-    value: ${{ steps.meta.outputs.tags[0] }}
+    value: ${{ steps.set_tag.outputs.tag }}
   tags:
     description: "Image Tags"
     value: ${{ steps.meta.outputs.tags }}
@@ -75,3 +75,8 @@ runs:
         cache-from: type=registry,ref=${{ inputs.registry }}/${{ inputs.image }}:${{ github.ref_name }}-cache
         build-args: ${{ inputs.build-args }}
         secrets: ${{ inputs.build-secrets }}
+
+    - name: Set Tag
+      id: set_tag
+      shell: bash
+      run: echo "tag=${{ steps.meta.outputs.tags[0] }}" >> $GITHUB_OUTPUT
