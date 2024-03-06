@@ -92,7 +92,7 @@ runs:
         # extracted_element="${my_array[$index_to_extract]}"
 
         # echo "Extracted element: $extracted_element"
-        jsonOutput=$(echo "$json" | jq -r '.tags' | '.[]')
+        jsonOutput=$(echo "$json" | jq -r '.tags | .[]')
         echo "jsonOutput: $jsonOutput"
         echo "jsonOutput: ${jsonOutput[0]}"
 
