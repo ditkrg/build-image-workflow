@@ -80,21 +80,8 @@ runs:
       id: set_tag
       shell: bash
       run: |
-        # Define an array of strings
-        # my_array=reg.dev.krd/dms/client:dev-cb54d82
-        # reg.dev.krd/dms/client:dev
-        # reg.dev.krd/dms/client:dev-cache
-
-        # # Specify the index you want to extract
-        # index_to_extract=0
-
-        # # Extract the element at the specified index
-        # extracted_element="${my_array[$index_to_extract]}"
-
-        # echo "Extracted element: $extracted_element"
-        jsonOutput=$(echo "$json" | jq -r '.tags')
-        echo "jsonOutput: ${jsonOutput}"
-        echo "jsonOutput: ${jsonOutput[0]}"
+        extracted_element=$(echo "$json" | jq -r '.tags | .[0]')
+        echo "extracted_element: $extracted_element"
 
         echo "tag=$extracted_element" >> $GITHUB_OUTPUT
       env:
