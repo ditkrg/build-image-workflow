@@ -92,8 +92,8 @@ runs:
         # extracted_element="${my_array[$index_to_extract]}"
 
         # echo "Extracted element: $extracted_element"
-        jsonOutput=$(echo "$json" | jq -r '.tags | .[0]')
-        echo "jsonOutput: $jsonOutput"
+        jsonOutput=$(echo "$json" | jq -r '.tags')
+        echo "jsonOutput: ${jsonOutput}"
         echo "jsonOutput: ${jsonOutput[0]}"
 
         echo "tag=$extracted_element" >> $GITHUB_OUTPUT
