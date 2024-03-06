@@ -81,7 +81,7 @@ runs:
       shell: bash
       run: |
         # Define an array of strings
-        my_array=${{ steps.meta.outputs.tags }}
+        my_array=$tags
 
         # Specify the index you want to extract
         index_to_extract=0
@@ -93,3 +93,5 @@ runs:
 
 
         echo "tag=$extracted_element" >> $GITHUB_OUTPUT
+      env:
+        tags: ${{ steps.meta.outputs.tags }}
