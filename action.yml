@@ -92,6 +92,6 @@ runs:
         echo "Extracted element: $extracted_element"
 
 
-        echo "tag=$extracted_element" >> $GITHUB_OUTPUT
+        echo "tag='$extracted_element'" >> $GITHUB_OUTPUT
       env:
         tags: ${{ steps.meta.outputs.tags }}
