@@ -28,7 +28,7 @@ inputs:
 outputs:
   tag:
     description: "Image Tag"
-    value: ${{ env.tag }}
+    value: ${{ steps.set_tag.outputs.tag }}
   tags:
     description: "Image Tags"
     value: ${{ steps.meta.outputs.tags }}
@@ -81,7 +81,9 @@ runs:
       shell: bash
       run: |
         # Define an array of strings
-        my_array=$tags
+        my_array=reg.dev.krd/dms/client:dev-cb54d82
+        reg.dev.krd/dms/client:dev
+        reg.dev.krd/dms/client:dev-cache
 
         # Specify the index you want to extract
         index_to_extract=0
@@ -90,8 +92,10 @@ runs:
         extracted_element="${my_array[$index_to_extract]}"
 
         echo "Extracted element: $extracted_element"
+        fromJson = $(echo "$json" | jq -r '.tags | [.] | .[0]')
+        echo "fromJson=$fromJson"
 
-
-        echo "tag=$extracted_element" >> $GITHUB_ENV
+        echo "tag=$extracted_element" >> $GITHUB_OUTPUT
       env:
         tags: ${{ steps.meta.outputs.tags }}
+        json: ${{ steps.meta.outputs.json }}
