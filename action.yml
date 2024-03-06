@@ -93,6 +93,7 @@ runs:
 
         # echo "Extracted element: $extracted_element"
         jsonOutput=$(echo "$json" | jq -r '.tags')
+        echo "jsonOutput: $jsonOutput"
         echo "jsonOutput: ${jsonOutput[0]}"
 
         echo "tag=$extracted_element" >> $GITHUB_OUTPUT
