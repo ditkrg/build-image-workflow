@@ -28,7 +28,7 @@ inputs:
 outputs:
   tag:
     description: "Image Tag"
-    value: ${{ steps.set_tag.outputs.tag }}
+    value: ${{ env.tag }}
   tags:
     description: "Image Tags"
     value: ${{ steps.meta.outputs.tags }}
@@ -92,6 +92,6 @@ runs:
         echo "Extracted element: $extracted_element"
 
 
-        echo "tag='$extracted_element'" >> $GITHUB_OUTPUT
+        echo "tag=$extracted_element" >> $GITHUB_ENV
       env:
         tags: ${{ steps.meta.outputs.tags }}
