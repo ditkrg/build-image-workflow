@@ -80,10 +80,10 @@ runs:
       id: set_tag
       shell: bash
       run: |
-        extracted_element=$(echo "$json" | jq -r '.tags | .[0]')
-        echo "extracted_element: $extracted_element"
 
-        echo "tag=$extracted_element" >> $GITHUB_OUTPUT
+        extracted_tag=$(echo "$json" | jq -r '.tags | .[0]')
+        echo "tag=$extracted_tag" >> $GITHUB_OUTPUT
+
       env:
         tags: ${{ steps.meta.outputs.tags }}
         json: ${{ steps.meta.outputs.json }}
