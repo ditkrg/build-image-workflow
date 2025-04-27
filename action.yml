@@ -1,6 +1,10 @@
 name: "Build, Scan and Push Image"
 description: "Build, Scan and Push Image to Self Hosted Registry"
 inputs:
+  push:
+    description: "Push to Registry"
+    required: false
+    default: "true"
   image:
     description: "Image Name"
     required: true
@@ -68,7 +72,7 @@ runs:
     - name: Build Docker images
       uses: docker/build-push-action@v6
       with:
-        push: true
+        push: ${{ inputs.push }}
         file: ${{ inputs.file }}
         tags: ${{ steps.meta.outputs.tags }}
         cache-to: type=inline
