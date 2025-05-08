@@ -56,6 +56,10 @@ runs:
           # Cache
           type=raw,value=${{ github.ref_name }}-cache
 
+          # Pull Request
+          type=ref,event=pr
+          type=ref,event=pr,suffix=-{{sha}},priority=8887 # 2
+
           # Branches
           type=ref,event=branch
           type=ref,event=branch,suffix=-{{sha}},priority=8888 # 2
