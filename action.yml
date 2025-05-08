@@ -30,6 +30,9 @@ inputs:
     description: "Build Secrets"
 
 outputs:
+  digest:
+    description: "Digest"
+    value: ${{ steps.build-and-push.outputs.digest }}
   tag:
     description: "Image Tag"
     value: ${{ steps.set_tag.outputs.tag }}
@@ -71,6 +74,7 @@ runs:
 
     - name: Build Docker images
       uses: docker/build-push-action@v6
+      id: build-and-push
       with:
         push: ${{ inputs.push }}
         file: ${{ inputs.file }}
