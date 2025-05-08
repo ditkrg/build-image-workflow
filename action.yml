@@ -53,9 +53,6 @@ runs:
         images: ${{ inputs.registry }}/${{ inputs.image }}
         flavor: latest=false
         tags: |
-          # Cache
-          type=raw,value=${{ github.ref_name }}-cache
-
           # Pull Request
           type=ref,event=pr
           type=ref,event=pr,suffix=-{{sha}},priority=8887 # 2
@@ -83,8 +80,8 @@ runs:
         push: ${{ inputs.push }}
         file: ${{ inputs.file }}
         tags: ${{ steps.meta.outputs.tags }}
-        cache-to: type=inline
-        cache-from: type=registry,ref=${{ inputs.registry }}/${{ inputs.image }}:${{ github.ref_name }}-cache
+        cache-to: type=registry,ref=${{ inputs.registry }}/${{ inputs.image }}:buildcache,mode=max
+        cache-from: type=registry,ref=${{ inputs.registry }}/${{ inputs.image }}:buildcache
         build-args: ${{ inputs.build-args }}
         secrets: ${{ inputs.build-secrets }}
 
