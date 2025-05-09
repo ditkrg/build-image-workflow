@@ -29,6 +29,21 @@ inputs:
     required: false
     description: "Build Secrets"
 
+  harbor-scan-report:
+    required: false
+    default: "true"
+    description: "Should try to get harbor scan report"
+
+  comment-harbor-scan-report:
+    required: false
+    default: "true"
+    description: "Should comment harbor scan report on PR"
+
+  harbor-scan-report-comment-marker:
+    required: false
+    default: '<!-- actions-comment-pull-request "build-and-push" -->'
+    description: "Comment marker for harbor scan report"
+
 outputs:
   digest:
     description: "Digest"
@@ -96,3 +111,71 @@ runs:
       env:
         tags: ${{ steps.meta.outputs.tags }}
         json: ${{ steps.meta.outputs.json }}
+
+    - name: Harbor Scan Results
+      id: harbor-scan-results
+      if: ${{ inputs.harbor-scan-report }} == 'true'
+      uses: ditkrg/harbor-scan-results-action@main
+      with:
+        image: ${{ steps.set_tag.outputs.tag }}
+        username: ${{ inputs.username }}
+        password: ${{ inputs.password }}
+        digest: ${{ steps.build-and-push.outputs.digest }}
+
+    - name: Comment on active branch PR
+      uses: actions/github-script@v7
+      if: ${{ inputs.comment-harbor-scan-report }} == 'true'
+      env:
+        COMMENT_MARKER: ${{ inputs.harbor-scan-report-comment-marker }}
+        TRIVY_SCAN_RESULTS: ${{ steps.harbor-scan-results.outputs.report-markdown }}
+      with:
+        script: |
+          const prs = await github.rest.pulls.list({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            head: `${context.repo.owner}:${context.ref.replace('refs/heads/', '')}`
+          });
+
+          if (prs.data.length <= 0) {
+            console.log('No open PR found for the current branch');
+            return;
+          }
+
+          const pr = prs.data[0];
+          // Check if there's already a comment from this workflow
+          const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number
+            });
+            
+            const comment_marker = process.env.COMMENT_MARKER;
+            const buildComment = comments.data.find(comment => 
+              comment.body.includes(comment_marker)
+            );
+
+            const commentBody = `${comment_marker}
+            ${process.env.TRIVY_SCAN_RESULTS}
+            `;
+            
+            if (buildComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: buildComment.id,
+                body: commentBody
+              });
+
+              console.log(`Updated comment to PR #${pr.number}`);
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body: commentBody
+              });
+
+              console.log(`Added comment to PR #${pr.number}`);
+            }
